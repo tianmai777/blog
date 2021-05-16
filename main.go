@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/tianmai777/blog/pkg/logger"
+	"gopkg.in/natefinch/lumberjack.v2"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tianmai777/blog/global"
 	"github.com/tianmai777/blog/internal/model"
@@ -22,6 +25,11 @@ func init() {
 	if err != nil {
 		log.Fatalf("setup db engine failed: %v", err)
 	}
+
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("setup log failed: %v", err)
+	}
 }
 
 func main() {
@@ -34,6 +42,7 @@ func main() {
 		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
+
 	s.ListenAndServe()
 }
 
@@ -69,6 +78,18 @@ func setupDBEngine() error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func setupLogger() error {
+	date := time.Now().Format("20060102")
+	global.Log = logger.NewLogger(&lumberjack.Logger{
+		Filename:  global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + date + global.AppSetting.LogFileExt,
+		MaxSize:   600,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
 
 	return nil
 }

@@ -6,8 +6,8 @@ Server:
 App:
   DefaultPageSize: 10
   MaxPageSize: 100
-  LogSavePath: storage/logs
-  LogFileName: app
+  LogSavePath: logs
+  LogFileName: blog
   LogFileExt: .log
 Database:
   DBType: mysql
