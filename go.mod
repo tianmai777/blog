@@ -18,6 +18,6 @@ require (
 	github.com/ugorji/go v1.2.5 // indirect
 	golang.org/x/sys v0.0.0-20210426080607-c94f62235c83 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

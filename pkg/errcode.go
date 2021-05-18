@@ -52,10 +52,8 @@ func (e *Error) Details() []string {
 }
 
 func (e *Error) WithDetails(details ...string) *Error {
-	e.details = []string{}
-	for _, d := range details {
-		e.details = append(e.details, d)
-	}
+	e.details = make([]string, 0, len(details))
+	e.details = append(e.details, details...)
 	return e
 }
 
