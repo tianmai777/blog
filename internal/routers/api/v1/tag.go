@@ -1,6 +1,11 @@
 package v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/tianmai777/blog/global"
+	"github.com/tianmai777/blog/pkg"
+	"github.com/tianmai777/blog/pkg/app"
+)
 
 type Tag struct{}
 
@@ -16,7 +21,22 @@ func NewTag() Tag {
 // @Param page_size query int false "每页数量"
 // @Success 200 {object} model.Tag "成功"
 // @Router /api/v1/tags [get]
-func (t Tag) List(c *gin.Context) {}
+func (t Tag) List(c *gin.Context) {
+	param := struct {
+		Name  string `form:"name" binding:"max=100"`
+		State uint8  `form:"state,default=1" binding:"oneof=0 1"`
+	}{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Log.Errorf("app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(pkg.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	response.ToResponse(gin.H{})
+	return
+}
 
 // @Summary 新增标签
 // @Produce  json
