@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"github.com/tianmai777/blog/pkg"
+	"github.com/tianmai777/blog/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +40,7 @@ func (r *Response) ToResponseList(list interface{}, totalRows int) {
 	})
 }
 
-func (r *Response) ToErrorResponse(err *pkg.Error) {
+func (r *Response) ToErrorResponse(err *errcode.Error) {
 	response := gin.H{
 		"code": err.Code(),
 		"msg":  err.Msg(),
