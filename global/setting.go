@@ -9,5 +9,6 @@ var (
 	ServerSetting   *pkg.ServerSettingS
 	AppSetting      *pkg.AppSettingS
 	DatabaseSetting *pkg.DatabaseSettingS
+	JWTSetting      *pkg.JWTSetting
 	Log             *logger.Logger
 )
