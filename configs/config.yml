@@ -24,3 +24,12 @@ JWT:
   Secret: luo
   Issuer: blog
   Expire: 7200
+Email:
+  Host: smtp.qq.com
+  Port: 465
+  UserName: xxxx@163.com
+  Password: xxxxxxxx
+  IsSSL: true
+  From: xxxx@163.com
+  To:
+    - xxxx@163.com

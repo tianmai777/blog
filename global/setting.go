@@ -11,4 +11,5 @@ var (
 	DatabaseSetting *pkg.DatabaseSettingS
 	JWTSetting      *pkg.JWTSetting
 	Log             *logger.Logger
+	EmailSetting    *pkg.EmailSettingS
 )

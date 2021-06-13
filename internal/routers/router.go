@@ -1,6 +1,10 @@
 package routers
 
 import (
+	"time"
+
+	"github.com/tianmai777/blog/global"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -8,14 +12,31 @@ import (
 	"github.com/tianmai777/blog/internal/middleware"
 	"github.com/tianmai777/blog/internal/routers/api"
 	v1 "github.com/tianmai777/blog/internal/routers/api/v1"
+	"github.com/tianmai777/blog/pkg/limiter"
 )
 
 func NewRouter() *gin.Engine {
-	r := gin.Default()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
+	r := gin.New()
+
+	var methodLimiters = limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
+		Key:          "/auth",
+		FillInterval: time.Second,
+		Capacity:     10,
+		Quantum:      10,
+	})
+
+	if global.ServerSetting.RunMode == "debug" {
+		r.Use(gin.Logger())
+		r.Use(gin.Recovery())
+	} else {
+		r.Use(middleware.AccessLog())
+		r.Use(middleware.Recovery())
+	}
+
 	r.Use(middleware.Translations())
 	r.Use(middleware.JWT())
+	r.Use(middleware.RateLimiter(methodLimiters))
+	r.Use(middleware.ContextTimeout(60 * time.Second))
 
 	// swag router
 	url := ginSwagger.URL("http://127.0.0.1:8000/swagger/doc.json")
