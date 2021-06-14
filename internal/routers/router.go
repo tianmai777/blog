@@ -3,6 +3,8 @@ package routers
 import (
 	"time"
 
+	"github.com/tianmai777/blog/internal/routers/api"
+
 	"github.com/tianmai777/blog/global"
 
 	"github.com/gin-gonic/gin"
@@ -10,13 +12,14 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "github.com/tianmai777/blog/docs"
 	"github.com/tianmai777/blog/internal/middleware"
-	"github.com/tianmai777/blog/internal/routers/api"
 	v1 "github.com/tianmai777/blog/internal/routers/api/v1"
 	"github.com/tianmai777/blog/pkg/limiter"
 )
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+
+	r.POST("/auth", api.GetAuth)
 
 	var methodLimiters = limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
 		Key:          "/auth",
@@ -37,6 +40,7 @@ func NewRouter() *gin.Engine {
 	r.Use(middleware.JWT())
 	r.Use(middleware.RateLimiter(methodLimiters))
 	r.Use(middleware.ContextTimeout(60 * time.Second))
+	r.Use(middleware.Tracing())
 
 	// swag router
 	url := ginSwagger.URL("http://127.0.0.1:8000/swagger/doc.json")
@@ -59,7 +63,6 @@ func NewRouter() *gin.Engine {
 		apiv1.GET("/articles/:id", article.Get)
 		apiv1.GET("/articles", article.List)
 	}
-	r.POST("/auth", api.GetAuth)
 
 	return r
 }

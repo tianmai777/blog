@@ -23,7 +23,7 @@ func Recovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				global.Log.WithCallersFrames().Errorf("panic recover err: %v", err)
+				global.Log.WithCallersFrames().Errorf(c, "panic recover err: %v", err)
 
 				err := defailtMailer.SendMail(
 					global.EmailSetting.To,

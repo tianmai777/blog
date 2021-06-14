@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/tianmai777/blog/pkg/logger"
+	"github.com/tianmai777/blog/pkg/tracer"
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,11 @@ func init() {
 	err = setupLogger()
 	if err != nil {
 		log.Fatalf("setup log failed: %v", err)
+	}
+
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init setupTracer err: %v", err)
 	}
 }
 
@@ -102,5 +108,15 @@ func setupLogger() error {
 		LocalTime: true,
 	}, "", log.LstdFlags).WithCaller(2)
 
+	return nil
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer("blog", "127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+
+	global.Tracer = jaegerTracer
 	return nil
 }
